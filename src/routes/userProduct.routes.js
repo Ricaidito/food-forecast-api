@@ -41,5 +41,6 @@ router.delete(
   "/:userId/products/:productId",
   userProductController.deleteUserProduct
 );
+router.delete("/:userId/products", userProductController.deleteAllUserProducts);
 
 module.exports = router;

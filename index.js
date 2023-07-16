@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
 
+// Routes
 const basketRoutes = require("./src/routes/basket.routes");
 const productRoutes = require("./src/routes/product.routes");
 const userRoutes = require("./src/routes/user.routes");
@@ -21,10 +22,10 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    console.log("Connected to database.");
+    console.log("[Connected to database]");
   })
   .catch(err => {
-    console.log("Database connection failed:", err);
+    console.log("[Database connection failed]:", err);
   });
 
 // Middlewares
@@ -40,5 +41,5 @@ app.use("/users", userRoutes);
 app.use("/user-products", userProductRoutes);
 
 app.listen(port, () => {
-  console.log(`Listening on http://localhost:${port}`);
+  console.log(`>> [Listening on http://localhost:${port}] <<`);
 });

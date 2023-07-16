@@ -25,8 +25,6 @@ const getUserProduct = async (req, res) => {
 };
 
 const createUserProduct = async (req, res) => {
-  console.log(req.file);
-  console.log(req.body);
   const userId = req.params.userId;
   let imageBuffer = null;
 
@@ -111,7 +109,15 @@ const deleteUserProduct = async (req, res) => {
     return;
   }
 
-  res.status(200).json(userProduct);
+  res.status(200).json({ message: "User product deleted" });
+};
+
+const deleteAllUserProducts = async (req, res) => {
+  const userId = req.params.userId;
+  const deletedProducts = await UserProduct.deleteMany({ userId: userId });
+  res.status(200).json({
+    message: `Succesfully deleted: ${deletedProducts.deletedCount} products`,
+  });
 };
 
 module.exports = {
@@ -121,4 +127,5 @@ module.exports = {
   deleteUserProduct,
   updateUserProductPrice,
   updateUserProductInfo,
+  deleteAllUserProducts,
 };
