@@ -1,6 +1,6 @@
 const Product = require("../models/product.model");
 const Price = require("../models/price.model");
-const productPipeline = require("../pipes/products.pipeline");
+const productPipeline = require("../pipes/productsPipeline");
 
 const getProducts = async (req, res) => {
   let page = parseInt(req.query.page);

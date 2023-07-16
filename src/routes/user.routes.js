@@ -1,6 +1,6 @@
 const express = require("express");
 const multer = require("multer");
-const { fileFilter, limits } = require("../configs/image.config");
+const { fileFilter, limits } = require("../configs/imageConfig");
 
 const storage = multer.memoryStorage();
 const upload = multer({

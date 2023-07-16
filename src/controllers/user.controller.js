@@ -12,9 +12,8 @@ const createUser = async (req, res) => {
 
   let imageBuffer = null;
 
-  if (req.file && req.file.mime !== "image/jpeg") {
+  if (req.file && req.file.mime !== "image/jpeg")
     imageBuffer = await sharp(req.file.buffer).jpeg().toBuffer();
-  }
 
   const user = new User({
     _id: new mongoose.Types.ObjectId(),
