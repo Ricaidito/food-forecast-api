@@ -1,5 +1,7 @@
+const mongoose = require("mongoose");
 const User = require("../models/user.model");
 
+// TODO: Add logic to not allow duplicate users.
 const createUser = async (req, res) => {
   const user = new User({
     _id: new mongoose.Types.ObjectId(),
@@ -7,6 +9,7 @@ const createUser = async (req, res) => {
     password: req.body.password,
     name: req.body.name,
     lastName: req.body.lastName,
+    profilePicture: req.body.profilePicture ? req.body.profilePicture : null,
   });
 
   user
@@ -15,6 +18,27 @@ const createUser = async (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 };
 
+const validateUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  const validatedUser = await User.findOne({
+    email: email,
+    password: password,
+  });
+
+  if (!validatedUser) {
+    return res.status(401).json({ error: "The credentials are incorrect." });
+  }
+
+  return res.status(200).json({
+    _id: validatedUser._id,
+    name: validatedUser.name,
+    lastName: validatedUser.lastName,
+    email: validatedUser.email,
+  });
+};
+
 module.exports = {
   createUser,
+  validateUser,
 };
