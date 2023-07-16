@@ -13,6 +13,9 @@ const userController = require("../controllers/user.controller");
 
 const router = express.Router();
 
+// GET /users
+router.get("/profile-pic/:id", userController.getUserProfilePicture);
+
 // POST /users
 router.post("/", upload.single("profilePicture"), userController.createUser);
 router.post("/validate", userController.validateUser);

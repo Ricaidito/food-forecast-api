@@ -13,6 +13,7 @@ const port = process.env.PORT || 8000;
 const mongoURL =
   process.env.MONGO_URL || "mongodb://127.0.0.1:27017/foodforecast";
 
+// Database connection
 mongoose
   .connect(mongoURL, {
     useNewUrlParser: true,
@@ -25,11 +26,13 @@ mongoose
     console.log("Database connection failed:", err);
   });
 
+// Middlewares
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
+// Routes
 app.use("/baskets", basketRoutes);
 app.use("/products", productRoutes);
 app.use("/users", userRoutes);
