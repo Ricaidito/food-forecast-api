@@ -1,9 +1,12 @@
 const mongoose = require("mongoose");
 
-const priceHistorySchema = new mongoose.Schema({
-  price: { type: Number, required: true },
-  date: { type: Date, default: Date.now, required: true },
-});
+const priceHistorySchema = new mongoose.Schema(
+  {
+    price: { type: Number, required: true },
+    date: { type: String, required: true },
+  },
+  { _id: false, versionKey: false }
+);
 
 const userProductSchema = new mongoose.Schema(
   {
@@ -16,7 +19,7 @@ const userProductSchema = new mongoose.Schema(
     productImage: { type: Buffer, required: false },
     origin: { type: String, required: true },
   },
-  { collection: "userProducts" }
+  { collection: "userProducts", versionKey: false }
 );
 
 const UserProduct = mongoose.model("UserProduct", userProductSchema);

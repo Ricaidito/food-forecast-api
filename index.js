@@ -7,6 +7,7 @@ const cors = require("cors");
 const basketRoutes = require("./src/routes/basket.routes");
 const productRoutes = require("./src/routes/product.routes");
 const userRoutes = require("./src/routes/user.routes");
+const userProductRoutes = require("./src/routes/userProduct.routes");
 
 const app = express();
 const port = process.env.PORT || 8000;
@@ -36,6 +37,7 @@ app.use(cors());
 app.use("/baskets", basketRoutes);
 app.use("/products", productRoutes);
 app.use("/users", userRoutes);
+app.use("/user-products", userProductRoutes);
 
 app.listen(port, () => {
   console.log(`Listening on http://localhost:${port}`);

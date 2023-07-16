@@ -1,7 +1,10 @@
+const mongoose = require("mongoose");
 const sharp = require("sharp");
 const UserProduct = require("../models/userProduct.model");
 
 const createUserProduct = async (req, res) => {
+  console.log(req.file);
+  console.log(req.body);
   const userId = req.params.userId;
   let imageBuffer = null;
 
@@ -13,7 +16,7 @@ const createUserProduct = async (req, res) => {
     userId: userId,
     productName: req.body.productName,
     price: req.body.price,
-    priceHistory: [{ price: req.body.price }],
+    priceHistory: [{ price: req.body.price, date: new Date().toISOString() }],
     category: req.body.category,
     productImage: imageBuffer,
     origin: req.body.origin,
@@ -21,7 +24,7 @@ const createUserProduct = async (req, res) => {
 
   userProduct
     .save()
-    .then(() => res.status(201).json(user))
+    .then(() => res.status(201).json(userProduct))
     .catch(err => res.status(500).json({ error: err }));
 };
 
@@ -47,6 +50,48 @@ const getUserProduct = async (req, res) => {
   res.status(200).json(userProduct);
 };
 
+const updateUserProductPrice = async (req, res) => {
+  const { id, userId } = req.params;
+
+  const userProduct = await UserProduct.findOne({ _id: id, userId: userId });
+
+  if (!userProduct) {
+    res.status(404).json({ error: "User product not found" });
+    return;
+  }
+
+  const priceHistoryEntry = {
+    price: req.body.price,
+    date: new Date().toISOString(),
+  };
+
+  userProduct.price = req.body.price;
+  userProduct.priceHistory.push(priceHistoryEntry);
+
+  userProduct
+    .save()
+    .then(() => res.status(200).json(userProduct))
+    .catch(err => res.status(500).json({ error: err }));
+};
+
+const updateUserProductInfo = async (req, res) => {
+  const { id, userId } = req.params;
+  const { productName, category, origin } = req.body;
+  const productToUpdate = await UserProduct.findOneAndUpdate(
+    { _id: id, userId: userId },
+    { productName, category, origin }
+  );
+
+  if (!productToUpdate) {
+    res.status(404).json({ error: "User product not found" });
+    return;
+  }
+
+  const updatedProduct = await UserProduct.findOne({ _id: id, userId: userId });
+
+  res.status(200).json(updatedProduct);
+};
+
 const deleteUserProduct = async (req, res) => {
   const id = req.params.id;
   const userId = req.params.userId;
@@ -61,47 +106,6 @@ const deleteUserProduct = async (req, res) => {
   }
 
   res.status(200).json(userProduct);
-};
-
-const updateUserProductPrice = async (req, res) => {
-  const { id, userId } = req.params;
-  const newPrice = req.body.price;
-
-  const userProduct = await UserProduct.findOne({ _id: id, userId: userId });
-
-  if (!userProduct) {
-    res.status(404).json({ error: "User product not found" });
-    return;
-  }
-
-  const priceHistoryEntry = {
-    price: userProduct.price,
-    date: new Date(),
-  };
-
-  userProduct.price = newPrice;
-  userProduct.priceHistory.push(priceHistoryEntry);
-
-  userProduct
-    .save()
-    .then(() => res.status(200).json(userProduct))
-    .catch(err => res.status(500).json({ error: err }));
-};
-
-const updateUserProductInfo = async (req, res) => {
-  const { id, userId } = req.params;
-  const { productName, category, origin } = req.body;
-  const updatedProduct = await UserProduct.findOneAndUpdate(
-    { _id: id, userId: userId },
-    { productName, category, origin }
-  );
-
-  if (!updatedProduct) {
-    res.status(404).json({ error: "User product not found" });
-    return;
-  }
-
-  res.status(200).json(updatedProduct);
 };
 
 module.exports = {

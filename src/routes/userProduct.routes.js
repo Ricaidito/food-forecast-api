@@ -36,3 +36,5 @@ router.put(
 
 // DELETE /user-products
 router.delete("/:userId/products/:id", userProductController.deleteUserProduct);
+
+module.exports = router;
