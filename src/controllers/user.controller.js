@@ -3,13 +3,14 @@ const User = require("../models/user.model");
 
 // TODO: Add logic to not allow duplicate users.
 const createUser = async (req, res) => {
+  const image = req.file ? req.file.buffer : null;
   const user = new User({
     _id: new mongoose.Types.ObjectId(),
     email: req.body.email,
     password: req.body.password,
     name: req.body.name,
     lastName: req.body.lastName,
-    profilePicture: req.body.profilePicture ? req.body.profilePicture : null,
+    profilePicture: image,
   });
 
   user
