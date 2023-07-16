@@ -2,6 +2,24 @@ const mongoose = require("mongoose");
 const User = require("../models/user.model");
 const sharp = require("sharp");
 
+const getUserProfilePicture = async (req, res) => {
+  const userId = req.params.userId;
+  const user = await User.findById(userId);
+
+  if (!user) {
+    res.status(404).json({ error: "User not found" });
+    return;
+  }
+
+  if (!user.profilePicture) {
+    res.status(404).json({ error: "Profile picture not found" });
+    return;
+  }
+
+  res.set("Content-Type", "image/jpeg");
+  res.send(user.profilePicture);
+};
+
 const createUser = async (req, res) => {
   const currentUser = await User.findOne({ email: req.body.email });
 
@@ -49,24 +67,6 @@ const validateUser = async (req, res) => {
     lastName: validatedUser.lastName,
     email: validatedUser.email,
   });
-};
-
-const getUserProfilePicture = async (req, res) => {
-  const userId = req.params.id;
-  const user = await User.findById(userId);
-
-  if (!user) {
-    res.status(404).json({ error: "User not found" });
-    return;
-  }
-
-  if (!user.profilePicture) {
-    res.status(404).json({ error: "Profile picture not found" });
-    return;
-  }
-
-  res.set("Content-Type", "image/jpeg");
-  res.send(user.profilePicture);
 };
 
 module.exports = {

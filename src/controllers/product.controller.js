@@ -40,16 +40,16 @@ const getProductsWithPriceHistory = async (req, res) => {
 };
 
 const getProductById = async (req, res) => {
-  const id = req.params.id;
-  const product = await Product.findById(id);
+  const productId = req.params.productId;
+  const product = await Product.findById(productId);
 
   if (product) res.status(200).json(product);
   else res.status(404).json({ error: "Product not found" });
 };
 
 const getProductByIdWithPriceHistory = async (req, res) => {
-  const id = req.params.id;
-  const product = await Product.findById(id);
+  const productId = req.params.productId;
+  const product = await Product.findById(productId);
 
   if (product) {
     const priceHistory = await Price.find({ productUrl: product.productUrl });

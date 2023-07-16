@@ -1,3 +1,4 @@
+const userProductController = require("../controllers/userProduct.controller");
 const express = require("express");
 const multer = require("multer");
 const { fileFilter, limits } = require("../configs/imageConfig");
@@ -9,13 +10,14 @@ const upload = multer({
   limits: limits,
 });
 
-const userProductController = require("../controllers/userProduct.controller");
-
 const router = express.Router();
 
 // GET /user-products
 router.get("/:userId/products", userProductController.getUserProducts);
-router.get("/:userId/products/:id", userProductController.getUserProduct);
+router.get(
+  "/:userId/products/:productId",
+  userProductController.getUserProduct
+);
 
 // POST /user-products
 router.post(
@@ -26,15 +28,18 @@ router.post(
 
 // PUT /user-products
 router.put(
-  "/:userId/products/:id",
+  "/:userId/products/:productId",
   userProductController.updateUserProductInfo
 );
 router.put(
-  "/:userId/products/:id/price",
+  "/:userId/products/:productId/price",
   userProductController.updateUserProductPrice
 );
 
 // DELETE /user-products
-router.delete("/:userId/products/:id", userProductController.deleteUserProduct);
+router.delete(
+  "/:userId/products/:productId",
+  userProductController.deleteUserProduct
+);
 
 module.exports = router;

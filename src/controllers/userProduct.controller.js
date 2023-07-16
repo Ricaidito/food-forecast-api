@@ -2,6 +2,28 @@ const mongoose = require("mongoose");
 const sharp = require("sharp");
 const UserProduct = require("../models/userProduct.model");
 
+const getUserProducts = async (req, res) => {
+  const userId = req.params.userId;
+  const userProducts = await UserProduct.find({ userId: userId });
+  res.status(200).json(userProducts);
+};
+
+const getUserProduct = async (req, res) => {
+  const productId = req.params.productId;
+  const userId = req.params.userId;
+  const userProduct = await UserProduct.findOne({
+    _id: productId,
+    userId: userId,
+  });
+
+  if (!userProduct) {
+    res.status(404).json({ error: "User product not found" });
+    return;
+  }
+
+  res.status(200).json(userProduct);
+};
+
 const createUserProduct = async (req, res) => {
   console.log(req.file);
   console.log(req.body);
@@ -28,32 +50,34 @@ const createUserProduct = async (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 };
 
-const getUserProducts = async (req, res) => {
-  const userId = req.params.userId;
-  const userProducts = await UserProduct.find({ userId: userId });
-  res.status(200).json(userProducts);
-};
+const updateUserProductInfo = async (req, res) => {
+  const { productId, userId } = req.params;
+  const { productName, category, origin } = req.body;
+  const productToUpdate = await UserProduct.findOneAndUpdate(
+    { _id: productId, userId: userId },
+    { productName, category, origin }
+  );
 
-const getUserProduct = async (req, res) => {
-  const id = req.params.id;
-  const userId = req.params.userId;
-  const userProduct = await UserProduct.findOne({
-    _id: id,
-    userId: userId,
-  });
-
-  if (!userProduct) {
+  if (!productToUpdate) {
     res.status(404).json({ error: "User product not found" });
     return;
   }
 
-  res.status(200).json(userProduct);
+  const updatedProduct = await UserProduct.findOne({
+    _id: productId,
+    userId: userId,
+  });
+
+  res.status(200).json(updatedProduct);
 };
 
 const updateUserProductPrice = async (req, res) => {
-  const { id, userId } = req.params;
+  const { productId, userId } = req.params;
 
-  const userProduct = await UserProduct.findOne({ _id: id, userId: userId });
+  const userProduct = await UserProduct.findOne({
+    _id: productId,
+    userId: userId,
+  });
 
   if (!userProduct) {
     res.status(404).json({ error: "User product not found" });
@@ -74,29 +98,11 @@ const updateUserProductPrice = async (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 };
 
-const updateUserProductInfo = async (req, res) => {
-  const { id, userId } = req.params;
-  const { productName, category, origin } = req.body;
-  const productToUpdate = await UserProduct.findOneAndUpdate(
-    { _id: id, userId: userId },
-    { productName, category, origin }
-  );
-
-  if (!productToUpdate) {
-    res.status(404).json({ error: "User product not found" });
-    return;
-  }
-
-  const updatedProduct = await UserProduct.findOne({ _id: id, userId: userId });
-
-  res.status(200).json(updatedProduct);
-};
-
 const deleteUserProduct = async (req, res) => {
-  const id = req.params.id;
+  const productId = req.params.id;
   const userId = req.params.userId;
   const userProduct = await UserProduct.findOneAndDelete({
-    _id: id,
+    _id: productId,
     userId: userId,
   });
 

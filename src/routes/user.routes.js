@@ -1,3 +1,4 @@
+const userController = require("../controllers/user.controller");
 const express = require("express");
 const multer = require("multer");
 const { fileFilter, limits } = require("../configs/imageConfig");
@@ -9,12 +10,10 @@ const upload = multer({
   limits: limits,
 });
 
-const userController = require("../controllers/user.controller");
-
 const router = express.Router();
 
 // GET /users
-router.get("/profile-pic/:id", userController.getUserProfilePicture);
+router.get("/profile-pic/:userId", userController.getUserProfilePicture);
 
 // POST /users
 router.post("/", upload.single("profilePicture"), userController.createUser);
