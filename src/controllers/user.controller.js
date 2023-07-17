@@ -17,7 +17,10 @@ const getUserProfilePicture = async (req, res) => {
   }
 
   res.set("Content-Type", "image/jpeg");
-  res.send(user.profilePicture);
+  const imageBase64 = Buffer.from(user.profilePicture.buffer).toString(
+    "base64"
+  );
+  res.send(imageBase64);
 };
 
 const createUser = async (req, res) => {
@@ -45,7 +48,7 @@ const createUser = async (req, res) => {
   user
     .save()
     .then(() => res.status(201).json(user))
-    .catch(err => res.status(500).json({ error: err }));
+    .catch((err) => res.status(500).json({ error: err }));
 };
 
 const validateUser = async (req, res) => {
