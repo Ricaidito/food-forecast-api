@@ -45,7 +45,7 @@ const createUserProduct = async (req, res) => {
   userProduct
     .save()
     .then(() => res.status(201).json(userProduct))
-    .catch(err => res.status(500).json({ error: err }));
+    .catch((err) => res.status(500).json({ error: err }));
 };
 
 const updateUserProductInfo = async (req, res) => {
@@ -93,11 +93,11 @@ const updateUserProductPrice = async (req, res) => {
   userProduct
     .save()
     .then(() => res.status(200).json(userProduct))
-    .catch(err => res.status(500).json({ error: err }));
+    .catch((err) => res.status(500).json({ error: err }));
 };
 
 const deleteUserProduct = async (req, res) => {
-  const productId = req.params.id;
+  const productId = req.params.productId;
   const userId = req.params.userId;
   const userProduct = await UserProduct.findOneAndDelete({
     _id: productId,
