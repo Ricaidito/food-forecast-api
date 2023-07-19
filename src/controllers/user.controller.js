@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const User = require("../models/user.model");
 const sharp = require("sharp");
+const path = require("path");
+const fs = require("fs");
 
 const getUserProfilePicture = async (req, res) => {
   const userId = req.params.userId;
@@ -33,8 +35,23 @@ const createUser = async (req, res) => {
 
   let imageBuffer = null;
 
-  if (req.file && req.file.mime !== "image/jpeg")
-    imageBuffer = await sharp(req.file.buffer).jpeg().toBuffer();
+  if (req.file) {
+    if (req.file.mime !== "image/jpeg")
+      imageBuffer = await sharp(req.file.buffer).jpeg().toBuffer();
+    else imageBuffer = req.file.buffer;
+  } else {
+    const defaultProfilePicPath = path.join(
+      __dirname,
+      "..",
+      "assets",
+      "default-pic.jpeg"
+    );
+    try {
+      imageBuffer = fs.readFileSync(defaultProfilePicPath);
+    } catch (err) {
+      console.log("Default profile picture not found:", err);
+    }
+  }
 
   const user = new User({
     _id: new mongoose.Types.ObjectId(),
@@ -48,7 +65,7 @@ const createUser = async (req, res) => {
   user
     .save()
     .then(() => res.status(201).json(user))
-    .catch((err) => res.status(500).json({ error: err }));
+    .catch(err => res.status(500).json({ error: err }));
 };
 
 const validateUser = async (req, res) => {
