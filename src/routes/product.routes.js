@@ -11,5 +11,9 @@ router.get(
   "/with-price/:productId",
   productController.getProductByIdWithPriceHistory
 );
+router.get(
+  "/search/:searchString",
+  productController.searchProductsByProductName
+);
 
 module.exports = router;

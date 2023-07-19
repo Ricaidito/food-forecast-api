@@ -20,6 +20,14 @@ const getProducts = async (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 };
 
+const searchProductsByProductName = async (req, res) => {
+  const searchString = req.params.searchString;
+  const products = await Product.find({
+    productName: { $regex: searchString, $options: "i" },
+  });
+  res.status(200).json(products);
+};
+
 const getProductsWithPriceHistory = async (req, res) => {
   let page = parseInt(req.query.page);
   let limit = parseInt(req.query.limit);
@@ -62,4 +70,5 @@ module.exports = {
   getProductsWithPriceHistory,
   getProductById,
   getProductByIdWithPriceHistory,
+  searchProductsByProductName,
 };
