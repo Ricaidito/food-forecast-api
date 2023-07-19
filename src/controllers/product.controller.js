@@ -65,10 +65,26 @@ const getProductByIdWithPriceHistory = async (req, res) => {
   } else res.status(404).json({ error: "Product not found" });
 };
 
+const getProductByIdWithPrice = async (req, res) => {
+  const productId = req.params.productId;
+  const product = await Product.findById(productId);
+  const latestPrice = await Price.findOne({
+    productUrl: product.productUrl,
+  }).sort({ date: -1 });
+
+  if (!product) {
+    res.status(404).json({ error: "Product not found" });
+    return;
+  }
+
+  return res.status(200).json({ productInfo: product, price: latestPrice });
+};
+
 module.exports = {
   getProducts,
   getProductsWithPriceHistory,
   getProductById,
   getProductByIdWithPriceHistory,
   searchProductsByProductName,
+  getProductByIdWithPrice,
 };
