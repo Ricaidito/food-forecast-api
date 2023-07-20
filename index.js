@@ -43,5 +43,5 @@ app.use("/user-products", userProductRoutes);
 app.use("/prices", priceRoutes);
 
 app.listen(port, () => {
-  console.log(`>> [Listening on http://localhost:${port}] <<`);
+  console.log(`[Listening on http://localhost:${port}]`);
 });
