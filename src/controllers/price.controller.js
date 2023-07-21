@@ -13,63 +13,42 @@ const getPriceHistory = async (req, res) => {
 
 const compareProductPrices = async (req, res) => {
   try {
-    const productId1 = req.params.productId1;
-    const productId2 = req.params.productId2;
+    const productIds = req.body.productIds;
 
-    const product1 = await Product.findOne({
-      $or: [{ _id: productId1 }, { productName: productId1 }],
-    });
-    const product2 = await Product.findOne({
-      $or: [{ _id: productId2 }, { productName: productId2 }],
-    });
-
-    if (!product1 || !product2) {
-      return res.status(404).json({ error: "One or both products not found" });
+    if (!Array.isArray(productIds) || productIds.length === 0) {
+      return res.status(400).json({ error: "Invalid productIds provided" });
     }
 
-    const prices1 = await Price.find({ productUrl: product1.productUrl }).sort({
-      date: "asc",
-    });
-    const prices2 = await Price.find({ productUrl: product2.productUrl }).sort({
-      date: "asc",
+    const products = await Product.find({
+      $or: productIds.map(productId => ({ _id: productId })),
     });
 
-    if (prices1.length === 0 || prices2.length === 0) {
-      return res
-        .status(404)
-        .json({ error: "No prices found for one or both products" });
+    if (products.length !== productIds.length) {
+      return res.status(404).json({ error: "One or more products not found" });
     }
 
-    const response = {
-      product1: {
-        _id: product1._id,
-        productName: product1.productName,
-        category: product1.category,
-        imageUrl: product1.imageUrl,
-        productUrl: product1.productUrl,
-        origin: product1.origin,
-        extractionDate: product1.extractionDate,
-      },
-      prices1: prices1.map(price => ({
+    const pricePromises = products.map(product =>
+      Price.find({ productUrl: product.productUrl }).sort({ date: "asc" })
+    );
+    const prices = await Promise.all(pricePromises);
+
+    const response = {};
+    products.forEach((product, index) => {
+      response[`product${index + 1}`] = {
+        _id: product._id,
+        productName: product.productName,
+        category: product.category,
+        imageUrl: product.imageUrl,
+        productUrl: product.productUrl,
+        origin: product.origin,
+        extractionDate: product.extractionDate,
+      };
+      response[`prices${index + 1}`] = prices[index].map(price => ({
         _id: price._id,
         productPrice: price.productPrice,
         date: price.date,
-      })),
-      product2: {
-        _id: product2._id,
-        productName: product2.productName,
-        category: product2.category,
-        imageUrl: product2.imageUrl,
-        productUrl: product2.productUrl,
-        origin: product2.origin,
-        extractionDate: product2.extractionDate,
-      },
-      prices2: prices2.map(price => ({
-        _id: price._id,
-        productPrice: price.productPrice,
-        date: price.date,
-      })),
-    };
+      }));
+    });
 
     res.json(response);
   } catch (error) {

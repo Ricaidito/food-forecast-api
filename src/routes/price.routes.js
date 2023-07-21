@@ -5,9 +5,8 @@ const router = express.Router();
 
 // GET /prices
 router.get("/:productUrl", priceController.getPriceHistory);
-router.get(
-  "/compare-products/:productId1/:productId2",
-  priceController.compareProductPrices
-);
+
+// POST /prices
+router.post("/compare-products", priceController.compareProductPrices);
 
 module.exports = router;
