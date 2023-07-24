@@ -26,12 +26,12 @@ const getUserProfilePicture = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  const currentUser = await User.findOne({ email: req.body.email });
+  // const currentUser = await User.findOne({ email: req.body.email });
 
-  if (currentUser) {
-    res.status(400).json({ error: "The user already exists." });
-    return;
-  }
+  // if (currentUser) {
+  //   res.status(400).json({ error: "The user already exists." });
+  //   return;
+  // }
 
   let imageBuffer = null;
 
