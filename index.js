@@ -1,8 +1,12 @@
 const express = require("express");
+const env = require("dotenv");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
+
+// Load environment variables
+env.config();
 
 // Routes
 const basketRoutes = require("./src/routes/basket.routes");
@@ -12,6 +16,7 @@ const userProductRoutes = require("./src/routes/userProduct.routes");
 const priceRoutes = require("./src/routes/price.routes");
 
 const app = express();
+const host = process.env.HOST || "http://localhost";
 const port = process.env.PORT || 8000;
 const mongoURL =
   process.env.MONGO_URL || "mongodb://127.0.0.1:27017/foodforecast";
@@ -33,6 +38,8 @@ mongoose
 app.use(morgan("dev"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
+
+// CORS configuration
 app.use(cors());
 
 // Routes
@@ -43,5 +50,5 @@ app.use("/user-products", userProductRoutes);
 app.use("/prices", priceRoutes);
 
 app.listen(port, () => {
-  console.log(`[Listening on http://localhost:${port}]`);
+  console.log(`[Listening on ${host}:${port}]`);
 });
