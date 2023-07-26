@@ -3,6 +3,7 @@ const User = require("../models/user.model");
 const sharp = require("sharp");
 const path = require("path");
 const fs = require("fs");
+const emailService = require("../utils/emailService");
 
 const getUserProfilePicture = async (req, res) => {
   const userId = req.params.userId;
@@ -26,13 +27,6 @@ const getUserProfilePicture = async (req, res) => {
 };
 
 const createUser = async (req, res) => {
-  // const currentUser = await User.findOne({ email: req.body.email });
-
-  // if (currentUser) {
-  //   res.status(400).json({ error: "The user already exists." });
-  //   return;
-  // }
-
   let imageBuffer = null;
 
   if (req.file) {
@@ -64,7 +58,13 @@ const createUser = async (req, res) => {
 
   user
     .save()
-    .then(() => res.status(201).json(user))
+    .then(() => {
+      emailService.sendWelcomeEmail(
+        user.email,
+        `${user.name} ${user.lastName}`
+      );
+      res.status(201).json(user);
+    })
     .catch(err => res.status(500).json({ error: err }));
 };
 

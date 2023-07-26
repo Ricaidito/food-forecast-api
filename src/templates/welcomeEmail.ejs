@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bienvenido(a) a Food Forecast</title>
+    <style>
+      body,
+      p {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #e2e1e1;
+        color: #333;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        background-color: #aed391;
+        padding: 10px;
+        text-align: center;
+        color: #fff;
+      }
+
+      .content {
+        padding: 20px;
+        background-color: #fff;
+      }
+
+      .content p {
+        margin-bottom: 15px;
+        text-align: justify;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background-color: #71b03f;
+        color: #fff;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 4px;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img
+          src="https://i.postimg.cc/Zns3F953/food-forecast-logo.png"
+          alt="Food Forecast Logo"
+          style="max-width: 200px; display: block; margin: 0 auto"
+        />
+        <h1 style="margin-top: 20px">Bienvenido(a) a Food Forecast</h1>
+      </div>
+      <div class="content">
+        <p>Estimado(a) <strong><%= personName %></strong>,</p>
+        <p>¡Bienvenido(a) a Food Forecast!</p>
+        <p>Nos complace tenerte como parte de nuestra comunidad.</p>
+        <p>
+          Puedes ingresar a tu cuenta utilizando tu dirección de correo
+          electrónico y la contraseña que elegiste durante el proceso de
+          registro.
+        </p>
+        <p>¡Gracias por unirte a nosotros!</p>
+        <p>Atentamente,</p>
+        <p>El equipo de Food Forecast</p>
+        <p style="text-align: center">
+          <a class="cta-button" href="https://www.foodforecast.com"
+            >Iniciar sesión</a
+          >
+        </p>
+      </div>
+      <div class="footer">
+        <p>Food Forecast | Todos los derechos reservados</p>
+      </div>
+    </div>
+  </body>
+</html>
