@@ -87,6 +87,15 @@ const validateUser = async (req, res) => {
     return;
   }
 
+  const userConfig = await UserConfig.findOne({ userId: validatedUser._id });
+
+  if (!userConfig) {
+    await UserConfig.create({
+      _id: new mongoose.Types.ObjectId(),
+      userId: validatedUser._id,
+    });
+  }
+
   res.status(200).json({
     _id: validatedUser._id,
     name: validatedUser.name,
