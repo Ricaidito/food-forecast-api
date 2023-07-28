@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const User = require("../models/user.model");
+const UserConfig = require("../models/userConfig.model");
 const sharp = require("sharp");
 const path = require("path");
 const fs = require("fs");
@@ -47,25 +48,30 @@ const createUser = async (req, res) => {
     }
   }
 
-  const user = new User({
-    _id: new mongoose.Types.ObjectId(),
-    email: req.body.email,
-    password: req.body.password,
-    name: req.body.name,
-    lastName: req.body.lastName,
-    profilePicture: imageBuffer,
-  });
+  try {
+    const newUser = await User.create({
+      _id: new mongoose.Types.ObjectId(),
+      email: req.body.email,
+      password: req.body.password,
+      name: req.body.name,
+      lastName: req.body.lastName,
+      profilePicture: imageBuffer,
+    });
 
-  user
-    .save()
-    .then(() => {
-      emailService.sendWelcomeEmail(
-        user.email,
-        `${user.name} ${user.lastName}`
-      );
-      res.status(201).json(user);
-    })
-    .catch(err => res.status(500).json({ error: err }));
+    await UserConfig.create({
+      _id: new mongoose.Types.ObjectId(),
+      userId: newUser._id,
+    });
+
+    emailService.sendWelcomeEmail(
+      newUser.email,
+      `${newUser.name} ${newUser.lastName}`
+    );
+
+    res.status(201).json({ user: newUser, config: { userId: newUser._id } });
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
 };
 
 const validateUser = async (req, res) => {
