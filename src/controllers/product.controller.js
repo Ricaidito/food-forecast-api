@@ -2,30 +2,26 @@ const Product = require("../models/product.model");
 const Price = require("../models/price.model");
 const productPipeline = require("../utils/productsPipeline");
 
-const getProducts = async (req, res) => {
+const getProducts = (req, res) => {
   let page = parseInt(req.query.page);
   let limit = parseInt(req.query.limit);
 
-  if (isNaN(page) || page <= 0) {
-    page = 1;
-  }
-  if (isNaN(limit) || limit <= 0) {
-    limit = 10;
-  }
+  if (isNaN(page) || page <= 0) page = 1;
+  if (isNaN(limit) || limit <= 0) limit = 10;
 
-  Product.find()
-    .skip((page - 1) * limit)
+  const skipAmount = (page - 1) * limit;
+  const query = {};
+  const { productName, category, origin } = req.query;
+
+  if (productName) query.productName = { $regex: new RegExp(productName, "i") };
+  if (category) query.category = category;
+  if (origin) query.origin = origin;
+
+  Product.find(query)
+    .skip(skipAmount)
     .limit(limit)
     .then(products => res.status(200).json(products))
     .catch(err => res.status(500).json({ error: err }));
-};
-
-const searchProductsByProductName = async (req, res) => {
-  const searchString = req.params.searchString;
-  const products = await Product.find({
-    productName: { $regex: searchString, $options: "i" },
-  });
-  res.status(200).json(products);
 };
 
 const getProductsWithPriceHistory = async (req, res) => {
@@ -85,6 +81,5 @@ module.exports = {
   getProductsWithPriceHistory,
   getProductById,
   getProductByIdWithPriceHistory,
-  searchProductsByProductName,
   getProductByIdWithPrice,
 };
