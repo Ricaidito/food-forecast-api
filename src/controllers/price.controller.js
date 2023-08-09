@@ -16,7 +16,8 @@ const compareProductPrices = async (req, res) => {
     const productIds = req.body.productIds;
 
     if (!Array.isArray(productIds) || productIds.length === 0) {
-      return res.status(400).json({ error: "Invalid productIds provided" });
+      res.status(400).json({ error: "Invalid productIds provided" });
+      return;
     }
 
     const products = await Product.find({
@@ -24,7 +25,8 @@ const compareProductPrices = async (req, res) => {
     });
 
     if (products.length !== productIds.length) {
-      return res.status(404).json({ error: "One or more products not found" });
+      res.status(404).json({ error: "One or more products not found" });
+      return;
     }
 
     const pricePromises = products.map(product =>
