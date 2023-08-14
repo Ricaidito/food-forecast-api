@@ -6,6 +6,7 @@ const path = require("path");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const authConfig = require("../configs/authConfig");
 const emailService = require("../utils/emailService");
 
 const getUserProfilePicture = async (req, res) => {
@@ -96,7 +97,7 @@ const loginUser = async (req, res) => {
     }
 
     const userConfig = await UserConfig.findOne({
-      userId: validatedUser._id,
+      userId: user._id,
     });
 
     if (!userConfig)
@@ -105,9 +106,8 @@ const loginUser = async (req, res) => {
         userId: user._id,
       });
 
-    const secretKey = process.env.JWT_SECRET;
-    const token = jwt.sign({ userId: user._id }, secretKey, {
-      expiresIn: "1h",
+    const token = jwt.sign({ userId: user._id }, authConfig.secretKey, {
+      expiresIn: authConfig.tokenExpireTime,
     });
 
     res.status(200).json({
@@ -123,7 +123,7 @@ const loginUser = async (req, res) => {
 };
 
 module.exports = {
+  loginUser,
   createUser,
   getUserProfilePicture,
-  loginUser,
 };
