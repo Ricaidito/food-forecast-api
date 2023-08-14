@@ -17,6 +17,6 @@ router.get("/profile-pic/:userId", userController.getUserProfilePicture);
 
 // POST /users
 router.post("/", upload.single("profilePicture"), userController.createUser);
-router.post("/validate", userController.validateUser);
+router.post("/login", userController.loginUser);
 
 module.exports = router;
