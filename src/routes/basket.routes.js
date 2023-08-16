@@ -3,7 +3,8 @@ const express = require("express");
 
 const router = express.Router();
 
-// GET /basket
+// GET /baskets
 router.get("/", basketController.getLatestBasket);
+router.get("/compare", basketController.compareBasketsWithPrevious);
 
 module.exports = router;
