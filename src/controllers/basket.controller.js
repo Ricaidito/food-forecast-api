@@ -8,7 +8,7 @@ const getLatestBasket = (req, res) => {
 };
 
 // TODO: Add the capability to see which products have increased/decreased in price
-const compareBasketsWithPrevious = async (req, res) => {
+const getBasketInfo = async (req, res) => {
   try {
     const baskets = await BasicBasket.find()
       .sort({ extractionDate: -1 })
@@ -25,6 +25,7 @@ const compareBasketsWithPrevious = async (req, res) => {
       res.status(200).json({
         currentPrice: currentBasket.totalAmount,
         previousPrice: null,
+        previousExtractionDate: null,
         difference: 0,
       });
       return;
@@ -33,6 +34,7 @@ const compareBasketsWithPrevious = async (req, res) => {
     res.status(200).json({
       currentPrice: currentBasket.totalAmount,
       previousPrice: previousBasket.totalAmount,
+      previousExtractionDate: previousBasket.extractionDate,
       difference: +(
         currentBasket.totalAmount - previousBasket.totalAmount
       ).toFixed(2),
@@ -44,5 +46,5 @@ const compareBasketsWithPrevious = async (req, res) => {
 
 module.exports = {
   getLatestBasket,
-  compareBasketsWithPrevious,
+  getBasketInfo,
 };

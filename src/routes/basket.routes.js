@@ -5,6 +5,6 @@ const router = express.Router();
 
 // GET /baskets
 router.get("/", basketController.getLatestBasket);
-router.get("/compare", basketController.compareBasketsWithPrevious);
+router.get("/info", basketController.getBasketInfo);
 
 module.exports = router;
