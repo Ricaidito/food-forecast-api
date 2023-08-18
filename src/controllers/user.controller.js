@@ -2,12 +2,11 @@ const mongoose = require("mongoose");
 const User = require("../models/user.model");
 const UserConfig = require("../models/userConfig.model");
 const sharp = require("sharp");
-const path = require("path");
-const fs = require("fs");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const authConfig = require("../configs/authConfig");
 const emailService = require("../utils/emailService");
+const fileService = require("../utils/fileService");
 
 const getUserProfilePicture = async (req, res) => {
   const userId = req.params.userId;
@@ -32,24 +31,11 @@ const getUserProfilePicture = async (req, res) => {
 
 const createUser = async (req, res) => {
   let imageBuffer = null;
-
   if (req.file) {
     if (req.file.mime !== "image/jpeg")
       imageBuffer = await sharp(req.file.buffer).jpeg().toBuffer();
     else imageBuffer = req.file.buffer;
-  } else {
-    const defaultProfilePicPath = path.join(
-      __dirname,
-      "..",
-      "assets",
-      "default-pic.jpeg"
-    );
-    try {
-      imageBuffer = fs.readFileSync(defaultProfilePicPath);
-    } catch (err) {
-      console.log("Default profile picture not found:", err);
-    }
-  }
+  } else imageBuffer = fileService.getDefaultProfilePicture();
 
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
