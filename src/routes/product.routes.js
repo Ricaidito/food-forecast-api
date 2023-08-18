@@ -5,7 +5,6 @@ const router = express.Router();
 
 // GET /products
 router.get("/", productController.getProducts);
-router.get("/with-price", productController.getProductsWithPriceHistory);
 router.get("/:productId", productController.getProductById);
 router.get(
   "/with-price/:productId",

@@ -1,6 +1,5 @@
 const Product = require("../models/product.model");
 const Price = require("../models/price.model");
-const productPipeline = require("../utils/productsPipeline");
 
 const getProducts = (req, res) => {
   let page = parseInt(req.query.page);
@@ -22,21 +21,6 @@ const getProducts = (req, res) => {
     .limit(limit)
     .then(products => res.status(200).json(products))
     .catch(err => res.status(500).json({ error: err }));
-};
-
-const getProductsWithPriceHistory = async (req, res) => {
-  let page = parseInt(req.query.page);
-  let limit = parseInt(req.query.limit);
-
-  if (isNaN(page) || page <= 0) page = 1;
-  if (isNaN(limit) || limit <= 0) limit = 10;
-
-  try {
-    const products = await productPipeline.getProductsPipeline(page, limit);
-    res.status(200).json(products);
-  } catch (err) {
-    res.status(500).json({ error: err });
-  }
 };
 
 const getProductById = async (req, res) => {
@@ -74,7 +58,6 @@ const getProductByIdWithPrice = async (req, res) => {
 
 module.exports = {
   getProducts,
-  getProductsWithPriceHistory,
   getProductById,
   getProductByIdWithPriceHistory,
   getProductByIdWithPrice,
