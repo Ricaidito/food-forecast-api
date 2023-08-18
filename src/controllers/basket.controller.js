@@ -24,8 +24,10 @@ const getBasketInfo = async (req, res) => {
       res.status(200).json({
         currentPrice: currentBasket.totalAmount,
         previousPrice: null,
+        currentExtractionDate: currentBasket.extractionDate,
         previousExtractionDate: null,
         difference: 0,
+        priceDifeferences: [],
       });
       return;
     }
@@ -60,8 +62,7 @@ const getBasketInfo = async (req, res) => {
       difference: +(
         currentBasket.totalAmount - previousBasket.totalAmount
       ).toFixed(2),
-      priceDifeferences:
-        productPriceDifferences.length > 0 ? productPriceDifferences : null,
+      priceDifeferences: productPriceDifferences,
     });
   } catch (err) {
     res.status(500).json("error: " + err);
