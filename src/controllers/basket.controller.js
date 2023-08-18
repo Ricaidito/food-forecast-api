@@ -7,7 +7,6 @@ const getLatestBasket = (req, res) => {
     .catch(err => res.status(500).json("error: " + err));
 };
 
-// TODO: Add the capability to see which products have increased/decreased in price
 const getBasketInfo = async (req, res) => {
   try {
     const baskets = await BasicBasket.find()
@@ -31,13 +30,38 @@ const getBasketInfo = async (req, res) => {
       return;
     }
 
+    const productPriceDifferences = [];
+
+    if (currentBasket.products.length == previousBasket.products.length) {
+      for (let i = 0; i < currentBasket.products.length; i++) {
+        const currentProduct = currentBasket.products[i];
+        const previousProduct = previousBasket.products[i];
+        if (
+          currentProduct.productPrice != previousProduct.productPrice &&
+          currentProduct.name == previousProduct.name
+        )
+          productPriceDifferences.push({
+            productName: currentProduct.productName,
+            currentPrice: currentProduct.productPrice,
+            previousPrice: previousProduct.productPrice,
+            difference: +(
+              currentProduct.productPrice - previousProduct.productPrice
+            ).toFixed(2),
+            imageUrl: currentProduct.imageUrl,
+          });
+      }
+    }
+
     res.status(200).json({
       currentPrice: currentBasket.totalAmount,
       previousPrice: previousBasket.totalAmount,
+      currentExtractionDate: currentBasket.extractionDate,
       previousExtractionDate: previousBasket.extractionDate,
       difference: +(
         currentBasket.totalAmount - previousBasket.totalAmount
       ).toFixed(2),
+      priceDifeferences:
+        productPriceDifferences.length > 0 ? productPriceDifferences : null,
     });
   } catch (err) {
     res.status(500).json("error: " + err);
