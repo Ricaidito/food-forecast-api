@@ -20,7 +20,7 @@ const app = express();
 const host = process.env.HOST || "http://localhost";
 const port = process.env.PORT || 8000;
 const mongoURL =
-  process.env.MONGO_URL || "mongodb://127.0.0.1:27017/foodforecast";
+  process.env.MONGO_URL || "mongodb+srv://foodforecast5:EbHxnokdvUGc6S39@cluster0.0uehdj6.mongodb.net/foodforecast?retryWrites=true&w=majority";
 
 // Database connection
 mongoose
