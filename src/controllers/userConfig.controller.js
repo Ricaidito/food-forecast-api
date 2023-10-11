@@ -1,4 +1,5 @@
 const UserConfig = require("../models/userConfig.model");
+const Product = require("../models/product.model");
 
 const getUserConfig = async (req, res) => {
   const userId = req.params.userId;
@@ -67,10 +68,17 @@ const updateNotificationThreshold = async (req, res) => {
   res.status(200).json(userConfig);
 };
 
+const getWatchlistProductInfo = async (req, res) => {
+  const productsIds = req.body.productsIds;
+  const products = await Product.find({ _id: { $in: productsIds } });
+  res.status(200).json(products);
+};
+
 module.exports = {
   getUserConfig,
   addProductToWatchList,
   removeProductFromWatchList,
   clearWatchList,
   updateNotificationThreshold,
+  getWatchlistProductInfo,
 };

@@ -11,6 +11,10 @@ router.post(
   "/config/watch-list/:userId/:productId",
   userConfigController.addProductToWatchList
 );
+router.post(
+  "/config/watch-list/info",
+  userConfigController.getWatchlistProductInfo
+);
 
 // PUT /user-config
 router.put(
