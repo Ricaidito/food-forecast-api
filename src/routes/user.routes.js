@@ -19,4 +19,12 @@ router.get("/profile-pic/:userId", userController.getUserProfilePicture);
 router.post("/", upload.single("profilePicture"), userController.createUser);
 router.post("/login", userController.loginUser);
 
+// PUT /users
+router.put("/update/:userId", userController.updateUserInfo);
+router.put(
+  "/update-profile-pic/:userId",
+  upload.single("profilePicture"),
+  userController.updateProfilePicture
+);
+
 module.exports = router;

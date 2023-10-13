@@ -103,8 +103,56 @@ const loginUser = async (req, res) => {
       email: user.email,
       token,
     });
-  } catch (error) {
-    res.status(500).json({ error: "An error occurred" });
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
+
+const updateUserInfo = async (req, res) => {
+  const userId = req.params.userId;
+  const { name, lastName } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    user.name = name;
+    user.lastName = lastName;
+
+    await user.save();
+
+    res.status(200).json({ message: "User info updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
+
+const updateProfilePicture = async (req, res) => {
+  const userId = req.params.userId;
+  let imageBuffer = null;
+  if (req.file.mime !== "image/jpeg")
+    imageBuffer = await sharp(req.file.buffer).jpeg().toBuffer();
+  else imageBuffer = req.file.buffer;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      res.status(404).json({ error: "User not found" });
+      return;
+    }
+
+    user.profilePicture = imageBuffer;
+
+    await user.save();
+
+    res.status(200).json({ message: "Profile picture updated successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err });
   }
 };
 
@@ -112,4 +160,6 @@ module.exports = {
   loginUser,
   createUser,
   getUserProfilePicture,
+  updateUserInfo,
+  updateProfilePicture,
 };
