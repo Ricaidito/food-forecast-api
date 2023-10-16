@@ -1,0 +1,18 @@
+meta {
+  name: update-users-info
+  type: http
+  seq: 3
+}
+
+put {
+  url: http://localhost:8000/users/update/65149136b8c0d60382139505
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "Ricardo",
+    "lastName": "Ramirez"
+  }
+}
