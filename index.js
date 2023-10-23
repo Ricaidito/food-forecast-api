@@ -15,12 +15,14 @@ const userRoutes = require("./src/routes/user.routes");
 const userProductRoutes = require("./src/routes/userProduct.routes");
 const priceRoutes = require("./src/routes/price.routes");
 const userConfigRoutes = require("./src/routes/userConfig.routes");
+const paymentRoutes = require("./src/routes/payments.routes");
 
 const app = express();
 const host = process.env.HOST || "http://localhost";
 const port = process.env.PORT || 8000;
 const mongoURL =
-  process.env.MONGO_URL || "mongodb+srv://foodforecast5:EbHxnokdvUGc6S39@cluster0.0uehdj6.mongodb.net/foodforecast?retryWrites=true&w=majority";
+  process.env.MONGO_URL ||
+  "mongodb+srv://foodforecast5:EbHxnokdvUGc6S39@cluster0.0uehdj6.mongodb.net/foodforecast?retryWrites=true&w=majority";
 
 // Database connection
 mongoose
@@ -50,6 +52,7 @@ app.use("/users", userRoutes);
 app.use("/user-products", userProductRoutes);
 app.use("/prices", priceRoutes);
 app.use("/user-config", userConfigRoutes);
+app.use("/payments", paymentRoutes);
 
 app.listen(port, () => {
   console.log(`[Listening on ${host}:${port}]`);
