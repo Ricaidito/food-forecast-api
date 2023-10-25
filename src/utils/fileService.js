@@ -8,7 +8,18 @@ const getDefaultProfilePicture = () => {
     "assets",
     "default-pic.jpeg"
   );
-  imageBuffer = fs.readFileSync(defaultProfilePicPath);
+  const imageBuffer = fs.readFileSync(defaultProfilePicPath);
+  return imageBuffer;
+};
+
+const getDefaultUserProductPicture = () => {
+  const defaultProductPicPath = path.join(
+    __dirname,
+    "..",
+    "assets",
+    "default-product-pic.jpeg"
+  );
+  const imageBuffer = fs.readFileSync(defaultProductPicPath);
   return imageBuffer;
 };
 
@@ -25,5 +36,6 @@ const getWelcomeEmailTemplate = () => {
 
 module.exports = {
   getDefaultProfilePicture,
+  getDefaultUserProductPicture,
   getWelcomeEmailTemplate,
 };

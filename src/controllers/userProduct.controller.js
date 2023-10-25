@@ -1,8 +1,7 @@
 const mongoose = require("mongoose");
 const sharp = require("sharp");
 const UserProduct = require("../models/userProduct.model");
-const path = require("path");
-const fs = require("fs");
+const fileService = require("../utils/fileService");
 
 const getUserProducts = async (req, res) => {
   const userId = req.params.userId;
@@ -35,14 +34,8 @@ const createUserProduct = async (req, res) => {
       imageBuffer = await sharp(req.file.buffer).jpeg().toBuffer();
     else imageBuffer = req.file.buffer;
   } else {
-    const defaultProductPicPath = path.join(
-      __dirname,
-      "..",
-      "assets",
-      "default-product-pic.jpeg"
-    );
     try {
-      imageBuffer = fs.readFileSync(defaultProductPicPath);
+      imageBuffer = fileService.getDefaultUserProductPicture();
     } catch (err) {
       console.log("Default product picture not found:", err);
     }
