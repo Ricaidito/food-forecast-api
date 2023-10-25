@@ -1,7 +1,7 @@
 const userController = require("../controllers/user.controller");
 const express = require("express");
 const multer = require("multer");
-const { fileFilter, limits } = require("../configs/imageConfig");
+const { fileFilter, limits } = require("../configs/fileConfig");
 
 const storage = multer.memoryStorage();
 const upload = multer({
