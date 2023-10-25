@@ -25,6 +25,11 @@ router.post(
   upload.single("productImage"),
   userProductController.createUserProduct
 );
+router.post(
+  "/:userId/products/file",
+  upload.single("productsFile"),
+  userProductController.createUserProductsFromFile
+);
 
 // PUT /user-products
 router.put(

@@ -1,15 +1,9 @@
 const fileFilter = (req, file, cb) => {
-  const allowedExtensions = ["png", "jpeg", "jpg"];
+  const allowedExtensions = ["png", "jpeg", "jpg", "xlsx"];
   const fileExtension = file.originalname.split(".").pop().toLowerCase();
 
   if (allowedExtensions.includes(fileExtension)) cb(null, true);
-  else
-    cb(
-      new Error(
-        "Invalid file format. Only PNG, JPEG, and JPG files are allowed."
-      ),
-      false
-    );
+  else cb(new Error("Invalid file format."), false);
 };
 
 const limits = {

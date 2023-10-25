@@ -58,6 +58,28 @@ const createUserProduct = async (req, res) => {
     .catch(err => res.status(500).json({ error: err }));
 };
 
+const createUserProductsFromFile = async (req, res) => {
+  const userId = req.params.userId;
+  const excelFile = req.file;
+
+  const productFromFile = fileService.parseExcelFile(excelFile.buffer);
+
+  const userProducts = productFromFile.map(product => ({
+    _id: new mongoose.Types.ObjectId(),
+    userId: userId,
+    productName: product.productName,
+    price: product.price,
+    priceHistory: [{ price: product.price, date: new Date().toISOString() }],
+    category: product.category,
+    productImage: fileService.getDefaultUserProductPicture(),
+    origin: product.origin,
+  }));
+
+  UserProduct.insertMany(userProducts)
+    .then(() => res.status(201).json(userProducts))
+    .catch(err => res.status(500).json({ error: err }));
+};
+
 const updateUserProductInfo = async (req, res) => {
   const { productId, userId } = req.params;
   const { productName, category, origin } = req.body;
@@ -132,6 +154,7 @@ const deleteAllUserProducts = async (req, res) => {
 
 module.exports = {
   createUserProduct,
+  createUserProductsFromFile,
   getUserProducts,
   getUserProduct,
   deleteUserProduct,

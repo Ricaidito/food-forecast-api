@@ -1,5 +1,6 @@
 const path = require("path");
 const fs = require("fs");
+const XLSX = require("xlsx");
 
 const getDefaultProfilePicture = () => {
   const defaultProfilePicPath = path.join(
@@ -23,6 +24,26 @@ const getDefaultUserProductPicture = () => {
   return imageBuffer;
 };
 
+const parseExcelFile = excelBuffer => {
+  const workbook = XLSX.read(excelBuffer, { type: "buffer" });
+  const sheetName = workbook.SheetNames[0];
+  const worksheet = workbook.Sheets[sheetName];
+  const products = XLSX.utils.sheet_to_json(worksheet);
+
+  for (const product of products) {
+    if (
+      !product.productName ||
+      !product.price ||
+      !product.category ||
+      !product.origin
+    ) {
+      return null;
+    }
+  }
+
+  return products;
+};
+
 const getWelcomeEmailTemplate = () => {
   const emailTemplatePath = path.join(
     __dirname,
@@ -37,5 +58,6 @@ const getWelcomeEmailTemplate = () => {
 module.exports = {
   getDefaultProfilePicture,
   getDefaultUserProductPicture,
+  parseExcelFile,
   getWelcomeEmailTemplate,
 };
