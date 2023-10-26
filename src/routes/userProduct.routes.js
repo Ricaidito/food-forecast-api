@@ -18,6 +18,7 @@ router.get(
   "/:userId/products/:productId",
   userProductController.getUserProduct
 );
+router.get("/download-template", userProductController.downloadExcelTemplate);
 
 // POST /user-products
 router.post(

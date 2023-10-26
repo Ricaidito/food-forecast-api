@@ -157,6 +157,10 @@ const deleteAllUserProducts = async (req, res) => {
   });
 };
 
+const downloadExcelTemplate = (req, res) => {
+  res.download(fileService.getExcelTemplateFilePath());
+};
+
 module.exports = {
   createUserProduct,
   createUserProductsFromFile,
@@ -166,4 +170,5 @@ module.exports = {
   updateUserProductPrice,
   updateUserProductInfo,
   deleteAllUserProducts,
+  downloadExcelTemplate,
 };

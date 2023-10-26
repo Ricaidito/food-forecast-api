@@ -44,6 +44,16 @@ const parseExcelFile = excelBuffer => {
   return products;
 };
 
+const getExcelTemplateFilePath = () => {
+  const filePath = path.join(
+    __dirname,
+    "..",
+    "templates",
+    "productsTemplate.xlsx"
+  );
+  return filePath;
+};
+
 const getWelcomeEmailTemplate = () => {
   const emailTemplatePath = path.join(
     __dirname,
@@ -59,5 +69,6 @@ module.exports = {
   getDefaultProfilePicture,
   getDefaultUserProductPicture,
   parseExcelFile,
+  getExcelTemplateFilePath,
   getWelcomeEmailTemplate,
 };
