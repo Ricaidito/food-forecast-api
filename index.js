@@ -18,13 +18,13 @@ const userConfigRoutes = require("./src/routes/userConfig.routes");
 const paymentRoutes = require("./src/routes/payments.routes");
 
 const app = express();
-const host = process.env.HOST || "http://localhost";
-const port = process.env.PORT || 8000;
-const mongoURL = process.env.MONGO_URL;
+const HOST = process.env.HOST || "http://localhost";
+const PORT = process.env.PORT || 8000;
+const MONGO_URL = process.env.MONGO_URL;
 
 // Database connection
 mongoose
-  .connect(mongoURL, {
+  .connect(MONGO_URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
@@ -52,6 +52,6 @@ app.use("/prices", priceRoutes);
 app.use("/user-config", userConfigRoutes);
 app.use("/payments", paymentRoutes);
 
-app.listen(port, () => {
-  console.log(`[Listening on ${host}:${port}]`);
+app.listen(PORT, () => {
+  console.log(`[Listening on ${HOST}:${PORT}]`);
 });
