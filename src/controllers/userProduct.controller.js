@@ -64,6 +64,11 @@ const createUserProductsFromFile = async (req, res) => {
 
   const productFromFile = fileService.parseExcelFile(excelFile.buffer);
 
+  if (!productFromFile) {
+    res.status(400).json({ error: "Excel file is not valid" });
+    return;
+  }
+
   const userProducts = productFromFile.map(product => ({
     _id: new mongoose.Types.ObjectId(),
     userId: userId,
