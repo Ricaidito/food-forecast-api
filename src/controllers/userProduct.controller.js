@@ -88,10 +88,26 @@ const createUserProductsFromFile = async (req, res) => {
 const updateUserProductInfo = async (req, res) => {
   const { productId, userId } = req.params;
   const { productName, category, origin } = req.body;
-  const productToUpdate = await UserProduct.findOneAndUpdate(
-    { _id: productId, userId: userId },
-    { productName, category, origin }
-  );
+  let imageBuffer = null;
+  let productToUpdate = null;
+
+  if (req.file) {
+    if (req.file.mime !== "image/jpeg")
+      imageBuffer = await sharp(req.file.buffer).jpeg().toBuffer();
+    else imageBuffer = req.file.buffer;
+  }
+
+  if (imageBuffer) {
+    productToUpdate = await UserProduct.findOneAndUpdate(
+      { _id: productId, userId: userId },
+      { productName, category, origin, productImage: imageBuffer }
+    );
+  } else {
+    productToUpdate = await UserProduct.findOneAndUpdate(
+      { _id: productId, userId: userId },
+      { productName, category, origin }
+    );
+  }
 
   if (!productToUpdate) {
     res.status(404).json({ error: "User product not found" });
