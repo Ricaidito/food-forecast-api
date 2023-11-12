@@ -41,6 +41,36 @@ const getProductByIdWithPriceHistory = async (req, res) => {
   } else res.status(404).json({ error: "Product not found" });
 };
 
+const getProductsByIdWithPriceHistory = async (req, res) => {
+  const { productIds } = req.body;
+
+  if (!Array.isArray(productIds) || productIds.length === 0) {
+    res.status(400).json({ error: "Invalid productIds provided" });
+    return;
+  }
+
+  const productResponse = [];
+
+  for (const productId of productIds) {
+    const product = await Product.findById(productId);
+    const prices = await Price.find({ productUrl: product.productUrl }).sort({
+      date: -1,
+    });
+    productResponse.push({
+      _id: product._id,
+      productName: product.productName,
+      category: product.category,
+      imageUrl: product.imageUrl,
+      productUrl: product.productUrl,
+      origin: product.origin,
+      extractionDate: product.extractionDate,
+      priceHistory: prices,
+    });
+  }
+
+  res.status(200).json({ products: productResponse });
+};
+
 const getProductByIdWithPrice = async (req, res) => {
   const productId = req.params.productId;
   const product = await Product.findById(productId);
@@ -60,5 +90,6 @@ module.exports = {
   getProducts,
   getProductById,
   getProductByIdWithPriceHistory,
+  getProductsByIdWithPriceHistory,
   getProductByIdWithPrice,
 };

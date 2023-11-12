@@ -15,4 +15,7 @@ router.get(
   productController.getProductByIdWithPrice
 );
 
+// POST /products
+router.post("/with-price", productController.getProductsByIdWithPriceHistory);
+
 module.exports = router;
