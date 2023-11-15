@@ -9,6 +9,16 @@ const getUserProducts = async (req, res) => {
   res.status(200).json(userProducts);
 };
 
+const getUserProductsByIds = async (req, res) => {
+  const userId = req.params.userId;
+  const userProductsIds = req.body.userProductsIds;
+  const userProducts = await UserProduct.find({
+    userId: userId,
+    _id: { $in: userProductsIds },
+  });
+  res.status(200).json(userProducts);
+};
+
 const getUserProduct = async (req, res) => {
   const productId = req.params.productId;
   const userId = req.params.userId;
@@ -182,6 +192,7 @@ module.exports = {
   createUserProductsFromFile,
   getUserProducts,
   getUserProduct,
+  getUserProductsByIds,
   deleteUserProduct,
   updateUserProductPrice,
   updateUserProductInfo,
