@@ -18,6 +18,10 @@ router.get(
   "/:userId/products/:productId",
   userProductController.getUserProduct
 );
+router.get(
+  "/:userId/products/by-ids",
+  userProductController.getUserProductsByIds
+);
 router.get("/download-template", userProductController.downloadExcelTemplate);
 
 // POST /user-products
