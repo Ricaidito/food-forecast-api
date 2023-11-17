@@ -65,10 +65,22 @@ const getWelcomeEmailTemplate = () => {
   return emailTemplate;
 };
 
+const getPriceDropEmailTemplate = () => {
+  const emailTemplatePath = path.join(
+    __dirname,
+    "..",
+    "templates",
+    "priceDrop.ejs"
+  );
+  const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+  return emailTemplate;
+};
+
 module.exports = {
   getDefaultProfilePicture,
   getDefaultUserProductPicture,
   parseExcelFile,
   getExcelTemplateFilePath,
   getWelcomeEmailTemplate,
+  getPriceDropEmailTemplate,
 };

@@ -15,7 +15,27 @@ const sendWelcomeEmail = async (email, personName) => {
       subject: "Bienvenido(a) a Food Forecast",
       html: emailContent,
     });
-    console.log("Email sent successfully");
+    console.log(`Email sent successfully to ${email}`);
+  } catch (error) {
+    console.log("Error sending email:", error);
+  }
+};
+
+const sendProductPriceDropEmail = async (email, personName, priceDrops) => {
+  try {
+    const emailTemplate = fileService.getPriceDropEmailTemplate();
+    const emailContent = ejs.render(emailTemplate, {
+      personName: personName,
+      priceDrops: priceDrops,
+    });
+    await transporter.sendMail({
+      from: emailConfig.auth.user,
+      to: email,
+      subject:
+        "Cambio de precio en producto de tu lista de seguimiento - Food Forecast",
+      html: emailContent,
+    });
+    console.log(`Email sent successfully to ${email}`);
   } catch (error) {
     console.log("Error sending email:", error);
   }
@@ -23,4 +43,5 @@ const sendWelcomeEmail = async (email, personName) => {
 
 module.exports = {
   sendWelcomeEmail,
+  sendProductPriceDropEmail,
 };
