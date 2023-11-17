@@ -39,7 +39,34 @@ const getPriceDropsOfTheWeek = (req, res) => {
     });
 };
 
+const getPriceDropsBetweenDates = (req, res) => {
+  const { start, end } = req.body;
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {
+    return res.status(400).json({ error: "Invalid dates" });
+  }
+
+  const startIsoString = startDate.toISOString();
+  const endIsoString = endDate.toISOString();
+
+  PriceDrop.find({
+    date: {
+      $gte: startIsoString,
+      $lte: endIsoString,
+    },
+  })
+    .then(priceDrops => {
+      res.status(200).json(priceDrops);
+    })
+    .catch(err => {
+      res.status(500).json({ error: err });
+    });
+};
+
 module.exports = {
   getPriceDrops,
   getPriceDropsOfTheWeek,
+  getPriceDropsBetweenDates,
 };
