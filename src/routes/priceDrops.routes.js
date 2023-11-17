@@ -7,4 +7,7 @@ const router = express.Router();
 router.get("/", priceDropsController.getPriceDrops);
 router.get("/week", priceDropsController.getPriceDropsOfTheWeek);
 
+// POST /price-drops
+router.post("/dates", priceDropsController.getPriceDropsBetweenDates);
+
 module.exports = router;

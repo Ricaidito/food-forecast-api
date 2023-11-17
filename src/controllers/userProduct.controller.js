@@ -145,9 +145,11 @@ const updateUserProductPrice = async (req, res) => {
     return;
   }
 
+  const newDate = new Date(req.body.date);
+
   const priceHistoryEntry = {
     price: req.body.price,
-    date: new Date().toISOString(),
+    date: newDate.toISOString(),
   };
 
   userProduct.price = req.body.price;
