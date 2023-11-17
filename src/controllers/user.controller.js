@@ -54,10 +54,10 @@ const createUser = async (req, res) => {
       userId: newUser._id,
     });
 
-    // emailService.sendWelcomeEmail(
-    //   newUser.email,
-    //   `${newUser.name} ${newUser.lastName}`
-    // );
+    emailService.sendWelcomeEmail(
+      newUser.email,
+      `${newUser.name} ${newUser.lastName}`
+    );
 
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {

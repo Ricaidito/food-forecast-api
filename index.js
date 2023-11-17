@@ -4,6 +4,7 @@ const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const cron = require("node-cron");
 
 // Load environment variables
 env.config();
@@ -17,6 +18,9 @@ const priceRoutes = require("./src/routes/price.routes");
 const userConfigRoutes = require("./src/routes/userConfig.routes");
 const paymentRoutes = require("./src/routes/payments.routes");
 const priceDropsRoutes = require("./src/routes/priceDrops.routes");
+
+// Services
+// const notificationsService = require("./src/utils/notificationsService");
 
 const app = express();
 const HOST = process.env.HOST || "http://localhost";
@@ -56,4 +60,23 @@ app.use("/price-drops", priceDropsRoutes);
 
 app.listen(PORT, () => {
   console.log(`[Listening on ${HOST}:${PORT}]`);
+  // Run the task every Friday at 4:00 PM AST
+  // cron.schedule(
+  //   "0 16 * * 5",
+  //   () => {
+  //     console.log(
+  //       "[INFO] Running the notification check every Friday at 4:00 PM AST"
+  //     );
+  //     notificationsService.sendPriceDropNotifications().catch(err => {
+  //       console.error(
+  //         "[ERROR] There was an error sending price drop notifications:",
+  //         err
+  //       );
+  //     });
+  //   },
+  //   {
+  //     scheduled: true,
+  //     timezone: "America/Puerto_Rico",
+  //   }
+  // );
 });

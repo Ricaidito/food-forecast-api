@@ -18,10 +18,6 @@ router.get(
   "/:userId/products/:productId",
   userProductController.getUserProduct
 );
-router.get(
-  "/:userId/products/by-ids",
-  userProductController.getUserProductsByIds
-);
 router.get("/download-template", userProductController.downloadExcelTemplate);
 
 // POST /user-products
@@ -34,6 +30,10 @@ router.post(
   "/:userId/products/file",
   upload.single("productsFile"),
   userProductController.createUserProductsFromFile
+);
+router.post(
+  "/:userId/products/by-ids",
+  userProductController.getUserProductsByIds
 );
 
 // PUT /user-products
