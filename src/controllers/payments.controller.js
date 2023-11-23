@@ -79,7 +79,7 @@ const createSubscription = async (req, res) => {
   });
   await UserConfig.findOneAndUpdate(
     { userId: userId },
-    { $set: { isPremium: true } }
+    { $set: { hasSubscription: true } }
   );
 
   res.send(subscription);
