@@ -100,7 +100,7 @@ const cancelSubscription = async (req, res) => {
     await Subscription.findByIdAndDelete(userSubscription._id);
     await UserConfig.findOneAndUpdate(
       { userId: userId },
-      { $set: { isPremium: false } }
+      { $set: { hasSubscription: false } }
     );
 
     res.status(200).send({
