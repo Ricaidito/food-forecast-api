@@ -18,6 +18,7 @@ const priceRoutes = require("./src/routes/price.routes");
 const userConfigRoutes = require("./src/routes/userConfig.routes");
 const paymentRoutes = require("./src/routes/payments.routes");
 const priceDropsRoutes = require("./src/routes/priceDrops.routes");
+const reportsRoutes = require("./src/routes/reports.routes");
 
 // Services
 // const notificationsService = require("./src/utils/notificationsService");
@@ -57,6 +58,7 @@ app.use("/prices", priceRoutes);
 app.use("/user-config", userConfigRoutes);
 app.use("/payments", paymentRoutes);
 app.use("/price-drops", priceDropsRoutes);
+app.use("/reports", reportsRoutes);
 
 app.listen(PORT, () => {
   console.log(`[Listening on ${HOST}:${PORT}]`);
