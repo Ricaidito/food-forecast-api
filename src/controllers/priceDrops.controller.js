@@ -1,4 +1,14 @@
 const PriceDrop = require("../models/priceDrops.model");
+const notificationsService = require("../utils/notificationsService");
+
+const sendPriceDrops = async (req, res) => {
+  try {
+    await notificationsService.sendPriceDropNotifications();
+    res.status(200).json({ message: "Price drop notifications sent" });
+  } catch (err) {
+    res.status(500).json({ error: err });
+  }
+};
 
 const getPriceDrops = (req, res) => {
   const amount = parseInt(req.query.amount) || null;
@@ -69,4 +79,5 @@ module.exports = {
   getPriceDrops,
   getPriceDropsOfTheWeek,
   getPriceDropsBetweenDates,
+  sendPriceDrops,
 };
