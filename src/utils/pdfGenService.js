@@ -1,9 +1,7 @@
 const Product = require("../models/product.model");
 const Price = require("../models/price.model");
 const UserProduct = require("../models/userProduct.model");
-const PriceDrop = require("../models/priceDrops.model");
 const Basket = require("../models/basket.model");
-
 const PdfPrinter = require("pdfmake");
 const fs = require("fs");
 const path = require("path");
@@ -11,12 +9,10 @@ const path = require("path");
 const fetchDataForReport = async userId => {
   const [userProducts, similarProducts] = await fetchSimilarProducts(userId);
   const marketOverview = await fetchQuickMarketOverview();
-  const priceDrops = await fetchPriceDrops();
   const reportData = {
     userProducts,
     similarProducts,
     marketOverview,
-    priceDrops,
   };
 
   return reportData;
@@ -65,105 +61,156 @@ const fetchQuickMarketOverview = async () => {
   return products;
 };
 
-const fetchPriceDrops = async () => {
-  const startOfWeek = new Date();
-  startOfWeek.setUTCHours(0, 0, 0, 0);
-  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+const imageToDataURL = pathOfFile => {
+  const filePath = path.join(__dirname, pathOfFile);
+  const imageBuffer = fs.readFileSync(filePath);
+  const imageType = filePath.split(".").pop();
+  const base64Image = imageBuffer.toString("base64");
+  return `data:image/${imageType};base64,${base64Image}`;
+};
 
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(endOfWeek.getDate() + 6);
-  endOfWeek.setUTCHours(23, 59, 59, 999);
+const extractSimilarProductData = similarProduct => {
+  const { similar } = similarProduct;
+  const data = [];
 
-  const startIsoString = startOfWeek.toISOString();
-  const endIsoString = endOfWeek.toISOString();
+  for (const product of similar) {
+    const { productName, price } = product;
+    data.push(`${productName} - $${price}`);
+  }
 
-  const priceDrops = await PriceDrop.find({
-    date: {
-      $gte: startIsoString,
-      $lte: endIsoString,
-    },
-  });
-
-  return priceDrops;
+  return data;
 };
 
 const generatePDFReport = reportData => {
   const fonts = {
     Roboto: {
-      normal: "src/fonts/Roboto-Regular.ttf",
-      bold: "src/fonts/Roboto-Medium.ttf",
-      italics: "src/fonts/Roboto-Italic.ttf",
-      bolditalics: "src/fonts/Roboto-MediumItalic.ttf",
+      normal: "src/assets/fonts/Roboto-Regular.ttf",
+      bold: "src/assets/fonts/Roboto-Medium.ttf",
+      italics: "src/assets/fonts/Roboto-Italic.ttf",
+      bolditalics: "src/assets/fonts/Roboto-MediumItalic.ttf",
     },
   };
+
+  const userProductsTableBody = reportData.userProducts.map(userProduct => [
+    userProduct.productName,
+    `$${userProduct.price}`,
+    userProduct.category,
+  ]);
+
+  const similarProductsContent = reportData.similarProducts.map(
+    similarProduct => [
+      {
+        text: similarProduct.productName,
+        style: "subheader",
+        fontSize: 14,
+        bold: true,
+        margin: [0, 10, 0, 10],
+      },
+      {
+        ul: extractSimilarProductData(similarProduct),
+      },
+    ]
+  );
+
+  const marketOverviewContent = reportData.marketOverview.map(product => [
+    product.productName,
+    `$${product.productPrice}`,
+  ]);
 
   const printer = new PdfPrinter(fonts);
 
   const docDefinition = {
+    header: {
+      columns: [
+        {
+          text: "Food Forecast ©",
+          alignment: "left",
+          fontSize: 10,
+          margin: 10,
+        },
+        {
+          text: `${new Date().toLocaleDateString()}`,
+          alignment: "right",
+          fontSize: 10,
+          margin: 10,
+        },
+      ],
+      columnGap: 10,
+    },
     content: [
-      { text: "Product Price Analysis Report", style: "header" },
-      { text: "User Product Comparisons", style: "subheader" },
+      {
+        columns: [
+          {
+            text: "Reporte de precios y productos",
+            style: "header",
+            fontSize: 18,
+            margin: 10,
+            bold: true,
+            alignment: "left",
+          },
+          {
+            image: imageToDataURL("../assets/food-forecast-logo.png"),
+            width: 100,
+            height: 34.75,
+            alignment: "right",
+            margin: [0, 10, 0, 10],
+          },
+        ],
+      },
+      {
+        text: "Productos del usuario:",
+        style: "header",
+        fontSize: 16,
+        bold: true,
+        margin: 20,
+      },
       {
         table: {
-          headerRows: 1,
           widths: ["*", "*", "*"],
-          body: [
-            ["Product Name", "User Price", "Market Average Price"],
-            ...reportData.userProductComparisons.map(comparison => {
-              const formattedUserPrice =
-                typeof comparison.userPrice === "number"
-                  ? `$${comparison.userPrice.toFixed(2)}`
-                  : "N/A";
-              const formattedMarketPrice =
-                typeof comparison.averageMarketPrice === "number"
-                  ? `$${comparison.averageMarketPrice.toFixed(2)}`
-                  : "N/A";
-
-              return [
-                comparison.productName,
-                formattedUserPrice,
-                formattedMarketPrice,
-              ];
-            }),
-          ],
+          headerRows: 1,
+          body: [["Nombre", "Precio", "Categoría"], ...userProductsTableBody],
+        },
+        layout: "lightHorizontalLines",
+      },
+      {
+        text: "Productos y precios similares:",
+        style: "header",
+        fontSize: 16,
+        margin: [20, 15, 20, 5],
+        bold: true,
+      },
+      ...similarProductsContent,
+      {
+        text: "Resumen del mercado:",
+        style: "header",
+        fontSize: 16,
+        margin: [20, 10, 20, 5],
+        bold: true,
+      },
+      {
+        table: {
+          widths: ["*", "*"],
+          headerRows: 1,
+          body: [["Nombre", "Precio"], ...marketOverviewContent],
         },
         layout: "lightHorizontalLines",
       },
     ],
-    styles: {
-      header: {
-        fontSize: 18,
-        bold: true,
+    footer: function (currentPage, pageCount) {
+      return {
+        text: currentPage.toString() + " de " + pageCount,
         alignment: "center",
-        margin: [0, 0, 0, 10],
-      },
-      subheader: {
-        fontSize: 16,
-        bold: true,
-        margin: [0, 10, 0, 5],
-      },
+        margin: [0, 0, 0, 30],
+      };
     },
   };
 
-  const reportsDir = path.join(__dirname, "src", "reports");
-  const reportPath = path.join(reportsDir, "report.pdf");
-
-  if (!fs.existsSync(reportsDir)) {
-    fs.mkdirSync(reportsDir, { recursive: true });
-  }
-
-  const pdfDoc = printer.createPdfKitDocument(docDefinition);
-  pdfDoc.pipe(fs.createWriteStream(reportPath));
-  pdfDoc.end();
-
-  console.log(reportData);
-  console.log("Report generated successfully.");
+  return printer.createPdfKitDocument(docDefinition);
 };
 
 const createPDF = async userId => {
   const dataForReport = await fetchDataForReport(userId);
-  await generatePDFReport(dataForReport);
-  console.log("Report generated successfully.");
+  return generatePDFReport(dataForReport);
 };
 
 module.exports = {
