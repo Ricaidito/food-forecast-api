@@ -19,6 +19,29 @@ const getUserProductsByIds = async (req, res) => {
   res.status(200).json(userProducts);
 };
 
+const getUserProductsByIdsAlterName = async (req, res) => {
+  const userId = req.params.userId;
+  const userProductsIds = req.body.userProductsIds;
+  const userProducts = await UserProduct.find({
+    userId: userId,
+    _id: { $in: userProductsIds },
+  });
+
+  const modifiedUserProducts = userProducts.map(product => {
+    const modifiedPriceHistory = product.priceHistory.map(priceEntry => {
+      return {
+        ...priceEntry._doc,
+        productPrice: priceEntry.price,
+        price: undefined,
+      };
+    });
+
+    return { ...product._doc, priceHistory: modifiedPriceHistory };
+  });
+
+  res.status(200).json(modifiedUserProducts);
+};
+
 const getUserProduct = async (req, res) => {
   const productId = req.params.productId;
   const userId = req.params.userId;
@@ -200,4 +223,5 @@ module.exports = {
   updateUserProductInfo,
   deleteAllUserProducts,
   downloadExcelTemplate,
+  getUserProductsByIdsAlterName,
 };

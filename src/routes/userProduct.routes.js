@@ -35,6 +35,10 @@ router.post(
   "/:userId/products/by-ids",
   userProductController.getUserProductsByIds
 );
+router.post(
+  "/:userId/products/by-ids2",
+  userProductController.getUserProductsByIdsAlterName
+);
 
 // PUT /user-products
 router.put(
