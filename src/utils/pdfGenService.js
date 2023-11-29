@@ -1,10 +1,12 @@
-const Product = require("../models/product.model");
-const Price = require("../models/price.model");
-const UserProduct = require("../models/userProduct.model");
-const Basket = require("../models/basket.model");
 const PdfPrinter = require("pdfmake");
 const fs = require("fs");
 const path = require("path");
+const mongoose = require("mongoose");
+const Product = require("../models/product.model");
+const Price = require("../models/price.model");
+const UserProduct = require("../models/userProduct.model");
+const UserReport = require("../models/userReports.model");
+const Basket = require("../models/basket.model");
 
 const fetchDataForReport = async userId => {
   const [userProducts, similarProducts] = await fetchSimilarProducts(userId);
@@ -81,7 +83,7 @@ const extractSimilarProductData = similarProduct => {
   return data;
 };
 
-const generatePDFReport = reportData => {
+const generatePDFReport = (reportData, reportDate = null) => {
   const fonts = {
     Roboto: {
       normal: "src/assets/fonts/Roboto-Regular.ttf",
@@ -129,7 +131,8 @@ const generatePDFReport = reportData => {
           margin: 10,
         },
         {
-          text: `${new Date().toLocaleDateString()}`,
+          text:
+            reportDate.toLocaleDateString() || new Date().toLocaleDateString(),
           alignment: "right",
           fontSize: 10,
           margin: 10,
@@ -208,11 +211,36 @@ const generatePDFReport = reportData => {
   return printer.createPdfKitDocument(docDefinition);
 };
 
+const generateReportName = () => {
+  const currentDate = new Date();
+  const reportDate = currentDate.toLocaleDateString().split("/");
+  const [day, month, year] = reportDate;
+  const formattedDate = `${year}_${month}_${day}`;
+  return `reporte_${formattedDate}.pdf`;
+};
+
 const createPDF = async userId => {
   const dataForReport = await fetchDataForReport(userId);
-  return generatePDFReport(dataForReport);
+  const fileName = generateReportName();
+  await new UserReport({
+    userId: new mongoose.Types.ObjectId(userId),
+    fileName,
+    ...dataForReport,
+  }).save();
+  return [generatePDFReport(dataForReport), fileName];
+};
+
+const createPDFFromData = async pdfId => {
+  const reportData = await UserReport.findById(pdfId);
+  const data = {
+    userProducts: reportData.userProducts,
+    similarProducts: reportData.similarProducts,
+    marketOverview: reportData.marketOverview,
+  };
+  return [generatePDFReport(data, reportData.createdAt), reportData.fileName];
 };
 
 module.exports = {
   createPDF,
+  createPDFFromData,
 };
