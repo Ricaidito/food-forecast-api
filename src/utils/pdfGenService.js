@@ -131,8 +131,9 @@ const generatePDFReport = (reportData, reportDate = null) => {
           margin: 10,
         },
         {
-          text:
-            reportDate.toLocaleDateString() || new Date().toLocaleDateString(),
+          text: reportData
+            ? reportDate.toLocaleDateString()
+            : new Date().toLocaleDateString(),
           alignment: "right",
           fontSize: 10,
           margin: 10,
