@@ -7,6 +7,7 @@ const Price = require("../models/price.model");
 const UserProduct = require("../models/userProduct.model");
 const UserReport = require("../models/userReports.model");
 const Basket = require("../models/basket.model");
+const { getDisplayCategory } = require("../utils/displayUtility");
 
 const fetchDataForReport = async userId => {
   const [userProducts, similarProducts] = await fetchSimilarProducts(userId);
@@ -95,8 +96,8 @@ const generatePDFReport = (reportData, reportDate = null) => {
 
   const userProductsTableBody = reportData.userProducts.map(userProduct => [
     userProduct.productName,
-    `$${userProduct.price}`,
-    userProduct.category,
+    `$${userProduct.price} DOP`,
+    getDisplayCategory(userProduct.category),
   ]);
 
   const similarProductsContent = reportData.similarProducts.map(
