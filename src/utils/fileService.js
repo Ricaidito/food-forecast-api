@@ -76,6 +76,28 @@ const getPriceDropEmailTemplate = () => {
   return emailTemplate;
 };
 
+const getSubscriptionEmailTemplate = () => {
+  const emailTemplatePath = path.join(
+    __dirname,
+    "..",
+    "templates",
+    "subEmail.ejs"
+  );
+  const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+  return emailTemplate;
+};
+
+const cancelSubscriptionEmailTemplate = () => {
+  const emailTemplatePath = path.join(
+    __dirname,
+    "..",
+    "templates",
+    "cancelEmail.ejs"
+  );
+  const emailTemplate = fs.readFileSync(emailTemplatePath, "utf-8");
+  return emailTemplate;
+};
+
 module.exports = {
   getDefaultProfilePicture,
   getDefaultUserProductPicture,
@@ -83,4 +105,6 @@ module.exports = {
   getExcelTemplateFilePath,
   getWelcomeEmailTemplate,
   getPriceDropEmailTemplate,
+  getSubscriptionEmailTemplate,
+  cancelSubscriptionEmailTemplate,
 };

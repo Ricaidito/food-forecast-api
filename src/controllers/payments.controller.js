@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const User = require("../models/user.model");
 const Subscription = require("../models/subscription.model");
 const UserConfig = require("../models/userConfig.model");
+const emailService = require("../utils/emailService");
 const Stripe = require("stripe");
-
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 const getSubscriptionDetails = async (req, res) => {
@@ -51,6 +51,7 @@ const getCustomer = async (req, res) => {
 const createSubscription = async (req, res) => {
   const { customerId, paymentMethodId } = req.body;
   const userId = req.params.userId;
+  const userData = await User.findById(userId);
 
   await stripe.paymentMethods.attach(paymentMethodId, {
     customer: customerId,
@@ -82,12 +83,17 @@ const createSubscription = async (req, res) => {
     { $set: { hasSubscription: true } }
   );
 
+  if (userData)
+    emailService.sendSubscriptionEmail(
+      userData.email,
+      `${userData.name} ${userData.lastName}`
+    );
   res.send(subscription);
 };
 
 const cancelSubscription = async (req, res) => {
   const userId = req.params.userId;
-
+  const userData = await User.findById(userId);
   const userSubscription = await Subscription.findOne({ userId });
 
   if (!userSubscription) {
@@ -103,6 +109,11 @@ const cancelSubscription = async (req, res) => {
       { $set: { hasSubscription: false } }
     );
 
+    if (userData)
+      emailService.sendCancelSubscriptionEmail(
+        userData.email,
+        `${userData.name} ${userData.lastName}`
+      );
     res.status(200).send({
       message: "Subscription cancelled.",
     });
