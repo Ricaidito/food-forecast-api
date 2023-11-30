@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Suscripción Cancelada en Food Forecast</title>
+    <style>
+      body,
+      p {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #e2e1e1;
+        color: #333;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+
+      .header {
+        background-color: #aed391;
+        padding: 10px;
+        text-align: center;
+        color: #fff;
+      }
+
+      .content {
+        padding: 20px;
+        background-color: #fff;
+      }
+
+      .content p {
+        margin-bottom: 15px;
+        text-align: justify;
+      }
+
+      .cta-button {
+        display: inline-block;
+        background-color: #71b03f;
+        color: #fff;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 4px;
+      }
+
+      .footer {
+        text-align: center;
+        margin-top: 20px;
+        color: #666;
+      }
+
+      @media (max-width: 600px) {
+        .container {
+          padding: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img
+          src="https://i.postimg.cc/Zns3F953/food-forecast-logo.png"
+          alt="Food Forecast Logo"
+          style="max-width: 200px; display: block; margin: 0 auto"
+        />
+        <h1 style="margin-top: 20px">Información sobre tu suscripción</h1>
+      </div>
+      <div class="content">
+        <p>Estimado(a) <strong><%= personName %></strong>,</p>
+        <p>
+          Hemos recibido tu solicitud para cancelar tu suscripción a Food
+          Forecast Premium.
+        </p>
+        <p>
+          Tu suscripción <strong>ha sido cancelada</strong> y no se te
+          realizarán más cargos.
+        </p>
+        <p>
+          Estamos tristes de verte ir y nos gustaría saber si hay algo que
+          podríamos haber hecho mejor. Tu retroalimentación es importante para
+          nosotros y nos ayuda a mejorar. Si tienes un momento, por favor
+          comparte tus comentarios.
+        </p>
+        <p>
+          Recuerda que siempre serás bienvenido(a) de regreso a nuestra
+          comunidad y que tenemos planes y ofertas que podrían interesarte en el
+          futuro.
+        </p>
+        <p>Gracias por haber sido parte de Food Forecast Premium.</p>
+        <p>Atentamente,</p>
+        <p>El equipo de Food Forecast</p>
+        <p style="text-align: center">
+          <a class="cta-button" href="https://forms.gle/FvXcH348LWGYzTSKA"
+            >Compartir Retroalimentación</a
+          >
+        </p>
+      </div>
+      <div class="footer">
+        <p>Food Forecast | Todos los derechos reservados</p>
+      </div>
+    </div>
+  </body>
+</html>

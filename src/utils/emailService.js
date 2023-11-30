@@ -41,7 +41,41 @@ const sendProductPriceDropEmail = async (email, personName, priceDrops) => {
   }
 };
 
+const sendSubscriptionEmail = async (email, personName) => {
+  try {
+    const emailTemplate = fileService.getSubscriptionEmailTemplate();
+    const emailContent = ejs.render(emailTemplate, { personName });
+    await transporter.sendMail({
+      from: emailConfig.auth.user,
+      to: email,
+      subject: "Te has suscrito a Food Forecast",
+      html: emailContent,
+    });
+    console.log(`Email sent successfully to ${email}`);
+  } catch (error) {
+    console.log("Error sending email:", error);
+  }
+};
+
+const sendCancelSubscriptionEmail = async (email, personName) => {
+  try {
+    const emailTemplate = fileService.cancelSubscriptionEmailTemplate();
+    const emailContent = ejs.render(emailTemplate, { personName });
+    await transporter.sendMail({
+      from: emailConfig.auth.user,
+      to: email,
+      subject: "Te has desuscrito de Food Forecast",
+      html: emailContent,
+    });
+    console.log(`Email sent successfully to ${email}`);
+  } catch (error) {
+    console.log("Error sending email:", error);
+  }
+};
+
 module.exports = {
   sendWelcomeEmail,
   sendProductPriceDropEmail,
+  sendSubscriptionEmail,
+  sendCancelSubscriptionEmail,
 };
