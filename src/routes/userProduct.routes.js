@@ -43,6 +43,7 @@ router.post(
 // PUT /user-products
 router.put(
   "/:userId/products/:productId",
+  upload.single("productImage"),
   userProductController.updateUserProductInfo
 );
 router.put(
