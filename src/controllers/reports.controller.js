@@ -37,8 +37,35 @@ const genPDFFromData = async (req, res) => {
   pdfStream.end();
 };
 
+const deleteReportById = async (req, res) => {
+  const pdfId = req.params.pdfId;
+  const pdfExists = await UserReport.exists({ _id: pdfId });
+
+  if (!pdfExists)
+    return res.status(404).json({
+      message: "PDF not found",
+    });
+
+  await UserReport.deleteOne({ _id: pdfId });
+
+  res.status(200).json({
+    message: "PDF deleted",
+  });
+};
+
+const deleteAllReportsForUser = async (req, res) => {
+  const userId = req.params.userId;
+  await UserReport.deleteMany({ userId });
+
+  res.status(200).json({
+    message: "PDFs deleted",
+  });
+};
+
 module.exports = {
   getGeneratedPDFsForUser,
   genPDF,
   genPDFFromData,
+  deleteReportById,
+  deleteAllReportsForUser,
 };
